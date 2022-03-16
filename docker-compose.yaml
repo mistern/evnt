@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+
+  web:
+    image: 'nginx:1-alpine'
+    depends_on:
+      - 'php'
+    volumes:
+      - './docker/nginx/templates:/etc/nginx/templates'
+      - '.:/var/www/html'
+    environment:
+      NGINX_HOST: 'evnt.app.localhost'
+      TZ: 'Europe/Vilnius'
+
+  php:
+    build:
+      context: 'docker/php'
+    depends_on:
+      - 'db'
+    volumes:
+      - '.:/var/www/html'
+    environment:
+      TZ: 'Europe/Vilnius'
+
+  db:
+    image: 'postgres:14'

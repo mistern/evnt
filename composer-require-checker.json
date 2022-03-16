@@ -1,0 +1,36 @@
+{
+    "symbol-whitelist": [
+        "null",
+        "true",
+        "false",
+        "static",
+        "self",
+        "parent",
+        "array",
+        "string",
+        "int",
+        "float",
+        "bool",
+        "iterable",
+        "callable",
+        "void",
+        "object",
+        "mixed",
+        "never",
+        "Symfony\\Bundle\\WebProfilerBundle\\WebProfilerBundle"
+    ],
+    "php-core-extensions": [
+        "Core",
+        "date",
+        "pcre",
+        "Phar",
+        "Reflection",
+        "SPL",
+        "standard"
+    ],
+    "scan-files": [
+        "bin/console",
+        "config/**/*.php",
+        "src/**/*.php"
+    ]
+}
