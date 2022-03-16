@@ -24,7 +24,8 @@
         "symfony/runtime": "6.0.*",
         "symfony/twig-bundle": "6.0.*",
         "symfony/yaml": "6.0.*",
-        "twig/twig": "^3.3"
+        "twig/twig": "^3.3",
+        "webmozart/assert": "^1.10"
     },
     "require-dev": {
         "icanhazstring/composer-unused": "^0.8.1",
@@ -57,7 +58,10 @@
     "autoload-dev": {
         "psr-4": {
             "App\\Tests\\": "tests/"
-        }
+        },
+        "files": [
+            "tests/Fixtures/Domain/Model/builders.php"
+        ]
     },
     "replace": {
         "symfony/polyfill-ctype": "*",
