@@ -9,7 +9,6 @@ use Webmozart\Glob\Glob;
 return static function (Configuration $config): Configuration {
     return $config
         ->addNamedFilter(NamedFilter::fromString('doctrine/doctrine-migrations-bundle'))
-        ->addNamedFilter(NamedFilter::fromString('doctrine/orm'))
         ->addNamedFilter(NamedFilter::fromString('ext-iconv'))
         ->addNamedFilter(NamedFilter::fromString('symfony/dotenv'))
         ->addNamedFilter(NamedFilter::fromString('symfony/flex'))

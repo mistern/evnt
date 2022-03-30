@@ -29,6 +29,11 @@ abstract class UuidEntityId
         return new static($id);
     }
 
+    public function __toString(): string
+    {
+        return $this->id;
+    }
+
     public function toString(): string
     {
         return $this->id;

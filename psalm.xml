@@ -18,7 +18,7 @@
     </projectFiles>
 
     <extraFiles>
-        <directory name="var/cache/dev/Symfony"/>
+        <directory name="var/cache/dev/Symfony/Config"/>
     </extraFiles>
 
     <issueHandlers>
@@ -34,5 +34,17 @@
                 <file name="tests/bootstrap.php"/>
             </errorLevel>
         </MissingFile>
+        <InternalMethod>
+            <errorLevel type="suppress">
+                <referencedMethod name="Doctrine\DBAL\Types\Type::__construct"/>
+            </errorLevel>
+        </InternalMethod>
     </issueHandlers>
+
+    <plugins>
+        <pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin">
+            <containerXml>var/cache/dev/App_KernelDevDebugContainer.xml</containerXml>
+            <containerXml>var/cache/dev/App_KernelTestDebugContainer.xml</containerXml>
+        </pluginClass>
+    </plugins>
 </psalm>

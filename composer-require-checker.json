@@ -17,6 +17,7 @@
         "object",
         "mixed",
         "never",
+        "DAMA\\DoctrineTestBundle\\DAMADoctrineTestBundle",
         "Symfony\\Bundle\\WebProfilerBundle\\WebProfilerBundle"
     ],
     "php-core-extensions": [
