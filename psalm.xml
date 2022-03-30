@@ -39,6 +39,11 @@
                 <referencedMethod name="Doctrine\DBAL\Types\Type::__construct"/>
             </errorLevel>
         </InternalMethod>
+        <TooManyArguments>
+            <errorLevel type="suppress">
+                <referencedFunction name="Doctrine\DBAL\Query\QueryBuilder::select"/>
+            </errorLevel>
+        </TooManyArguments>
     </issueHandlers>
 
     <plugins>
