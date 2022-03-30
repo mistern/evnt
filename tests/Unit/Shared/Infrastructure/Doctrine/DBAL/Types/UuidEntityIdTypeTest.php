@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Shared\Infrastructure\Doctrine\DBAL\Types;
 
-use App\Tests\Doubles\Doctrine\PlatformDummy;
-use App\Tests\Doubles\Doctrine\PlatformStub;
 use App\Tests\Unit\Shared\Domain\Model\BasicUuidEntityId;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -17,12 +16,16 @@ final class UuidEntityIdTypeTest extends TestCase
     {
         /** @psalm-suppress InternalMethod */
         $type = new BasicUuidEntityIdType();
-        $platform = new PlatformStub();
-        $platform->guidTypeDeclarationSQL = 'guid type declaration';
+        $platform = $this->createMock(AbstractPlatform::class);
+        $platform->method('getGuidTypeDeclarationSQL')->willReturn($expectedDeclaration = 'guid declaration');
 
-        $declaration = $type->getSQLDeclaration([], $platform);
+        $actualDeclaration = $type->getSQLDeclaration([], $platform);
 
-        self::assertSame($platform->guidTypeDeclarationSQL, $declaration);
+        self::assertSame(
+            $expectedDeclaration,
+            $actualDeclaration,
+            'Failed asserting that platform specific GUID type was created.'
+        );
     }
 
     /**
@@ -33,7 +36,7 @@ final class UuidEntityIdTypeTest extends TestCase
         /** @psalm-suppress InternalMethod */
         $type = new BasicUuidEntityIdType();
 
-        $value = $type->convertToPHPValue(null, new PlatformDummy());
+        $value = $type->convertToPHPValue(null, $this->createMock(AbstractPlatform::class));
 
         self::assertNull($value, 'Failed to convert database null value to PHP null value.');
     }
@@ -47,11 +50,15 @@ final class UuidEntityIdTypeTest extends TestCase
         $type = new BasicUuidEntityIdType();
 
         /** @var BasicUuidEntityId|null $value */
-        $value = $type->convertToPHPValue($id = '48626056-e915-4843-bbe9-1f30625a5f8c', new PlatformDummy());
+        $value = $type->convertToPHPValue(
+            $id = '48626056-e915-4843-bbe9-1f30625a5f8c',
+            $this->createMock(AbstractPlatform::class)
+        );
 
         self::assertNotNull($value);
-        self::assertTrue(
-            BasicUuidEntityId::fromString($id)->equals($value),
+        self::assertEquals(
+            BasicUuidEntityId::fromString($id),
+            $value,
             'Failed to convert database string to UUID Entity ID object.'
         );
     }
@@ -71,22 +78,21 @@ final class UuidEntityIdTypeTest extends TestCase
             )
         );
 
-        $type->convertToPHPValue($unsupportedDatabaseValue, new PlatformDummy());
+        $type->convertToPHPValue($unsupportedDatabaseValue, $this->createMock(AbstractPlatform::class));
     }
 
+    /**
+     * @throws ConversionException
+     */
     public function testItFailsToConvertIfPHPValueCreationFails(): void
     {
         /** @psalm-suppress InternalMethod */
         $type = new BasicUuidEntityIdType();
         $this->expectExceptionObject(
-            ConversionException::conversionFailed(
-                $value = '',
-                BasicUuidEntityIdType::NAME,
-                $exception = new RuntimeException()
-            )
+            ConversionException::conversionFailed($value = '', BasicUuidEntityIdType::NAME, new RuntimeException())
         );
 
-        $type->convertToPHPValue($value, new PlatformDummy());
+        $type->convertToPHPValue($value, $this->createMock(AbstractPlatform::class));
     }
 
     /**
@@ -97,7 +103,7 @@ final class UuidEntityIdTypeTest extends TestCase
         /** @psalm-suppress InternalMethod */
         $type = new BasicUuidEntityIdType();
 
-        $value = $type->convertToDatabaseValue(null, new PlatformDummy());
+        $value = $type->convertToDatabaseValue(null, $this->createMock(AbstractPlatform::class));
 
         self::assertNull($value, 'Failed to convert PHP null value to database null value.');
     }
@@ -112,7 +118,7 @@ final class UuidEntityIdTypeTest extends TestCase
 
         $value = $type->convertToDatabaseValue(
             BasicUuidEntityId::fromString($id = 'c9f9c097-5500-4d1d-be05-5d0f9dbb48bd'),
-            new PlatformDummy()
+            $this->createMock(AbstractPlatform::class)
         );
 
         self::assertSame($id, $value, 'Failed to convert UUID Entity ID object to database string.');
@@ -133,7 +139,7 @@ final class UuidEntityIdTypeTest extends TestCase
             )
         );
 
-        $type->convertToDatabaseValue($unsupportedPHPValue, new PlatformDummy());
+        $type->convertToDatabaseValue($unsupportedPHPValue, $this->createMock(AbstractPlatform::class));
     }
 
     public function testItRequiresSQLCommentHint(): void
@@ -141,6 +147,9 @@ final class UuidEntityIdTypeTest extends TestCase
         /** @psalm-suppress InternalMethod */
         $type = new BasicUuidEntityIdType();
 
-        self::assertTrue($type->requiresSQLCommentHint(new PlatformDummy()), 'SQL comment hint was is not required.');
+        self::assertTrue(
+            $type->requiresSQLCommentHint($this->createMock(AbstractPlatform::class)),
+            'SQL comment hint was is not required.'
+        );
     }
 }

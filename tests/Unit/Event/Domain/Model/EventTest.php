@@ -17,7 +17,7 @@ final class EventTest extends TestCase
         $id = anEventId()->build();
         $event = anEvent()->withId($id)->build();
 
-        self::assertTrue($id->equals($event->getId()), 'Event was not registered with provided ID.');
+        self::assertEquals($id, $event->getId(), 'Event was not registered with provided ID.');
     }
 
     public function testItRegistersWithProvidedName(): void
@@ -25,6 +25,6 @@ final class EventTest extends TestCase
         $name = aName()->build();
         $event = anEvent()->withName($name)->build();
 
-        self::assertTrue($name->equals($event->getName()), 'Event was not registered with provided Event Name.');
+        self::assertEquals($name, $event->getName(), 'Event was not registered with provided Event Name.');
     }
 }

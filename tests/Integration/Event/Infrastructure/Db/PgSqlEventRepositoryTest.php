@@ -8,8 +8,6 @@ use App\Event\Domain\Model\EventId;
 use App\Event\Domain\Service\Exception\EventIdGenerationFailed;
 use App\Event\Domain\Service\Exception\EventNotFound;
 use App\Event\Infrastructure\Db\PgSqlEventRepository;
-use App\Tests\Doubles\RamseyUuid\UuidFactoryDummy;
-use App\Tests\Doubles\RamseyUuid\UuidFactoryStub;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
@@ -58,8 +56,8 @@ final class PgSqlEventRepositoryTest extends KernelTestCase
 
         $event = $repository->getById(anEventId()->withId($id)->build());
 
-        self::assertSame($id, $event->getId()->toString(), 'Event ID was not loaded');
-        self::assertSame($name, $event->getName()->toString(), 'Event Name was not loaded');
+        self::assertSame($id, $event->getId()->toString(), 'Event ID was not loaded.');
+        self::assertSame($name, $event->getName()->toString(), 'Event Name was not loaded.');
     }
 
     public function testItFailsToFindEventByIdIfIdDoesNotExist(): void
@@ -73,8 +71,8 @@ final class PgSqlEventRepositoryTest extends KernelTestCase
     public function testItGeneratesNextId(): void
     {
         $expectedId = EventId::fromString('7a87d4bb-f041-4d15-88c7-35479a634207');
-        $uuidFactory = new UuidFactoryStub();
-        $uuidFactory->uuid4 = Uuid::fromString($expectedId->toString());
+        $uuidFactory = $this->createMock(UuidFactoryInterface::class);
+        $uuidFactory->method('uuid4')->willReturn(Uuid::fromString($expectedId->toString()));
         $repository = $this->createRepository(uuidFactory: $uuidFactory);
 
         $id = $repository->getNextId();
@@ -84,10 +82,10 @@ final class PgSqlEventRepositoryTest extends KernelTestCase
 
     public function testItFailsToGenerateNextId(): void
     {
-        $uuidFactory = new UuidFactoryStub();
-        $uuidFactory->uuid4 = new RuntimeException();
+        $uuidFactory = $this->createMock(UuidFactoryInterface::class);
+        $uuidFactory->method('uuid4')->willThrowException($exception = new RuntimeException());
         $repository = $this->createRepository(uuidFactory: $uuidFactory);
-        $this->expectExceptionObject(EventIdGenerationFailed::unexpectedly($uuidFactory->uuid4));
+        $this->expectExceptionObject(EventIdGenerationFailed::unexpectedly($exception));
 
         $repository->getNextId();
     }
@@ -108,7 +106,7 @@ final class PgSqlEventRepositoryTest extends KernelTestCase
     ): PgSqlEventRepository {
         return new PgSqlEventRepository(
             $entityManager ?? $this->getEntityManager(),
-            $uuidFactory ?? new UuidFactoryDummy()
+            $uuidFactory ?? $this->createMock(UuidFactoryInterface::class)
         );
     }
 

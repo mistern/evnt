@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 use function App\Tests\Fixtures\Domain\Model\aName;
+use function sprintf;
 use function str_repeat;
 
 final class NameTest extends TestCase
@@ -41,7 +42,14 @@ final class NameTest extends TestCase
         $name = aName()->withName($value)->build();
         $otherName = aName()->withName($value)->build();
 
-        self::assertTrue($name->equals($otherName), 'Event Names with same value should be equal.');
+        self::assertTrue(
+            $name->equals($otherName),
+            sprintf(
+                'Event Name with value "%s" should be equal to other Event Name with value "%s".',
+                $name->toString(),
+                $otherName->toString()
+            )
+        );
     }
 
     public function testItDoesNotEqualToOtherNameWithDifferentValue(): void
@@ -49,6 +57,13 @@ final class NameTest extends TestCase
         $name = aName()->withName('Event name')->build();
         $otherName = aName()->withName('Different event name')->build();
 
-        self::assertFalse($name->equals($otherName), 'Event Names with different values should not be equal.');
+        self::assertFalse(
+            $name->equals($otherName),
+            sprintf(
+                'Event Name with value "%s" should not be equal to other Event Name with value "%s".',
+                $name->toString(),
+                $otherName->toString()
+            )
+        );
     }
 }

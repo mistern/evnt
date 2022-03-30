@@ -6,7 +6,7 @@ namespace App\Tests\Unit\Event\Infrastructure\Doctrine\DBAL\Types;
 
 use App\Event\Domain\Model\Name;
 use App\Event\Infrastructure\Doctrine\DBAL\Types\NameType;
-use App\Tests\Doubles\Doctrine\PlatformDummy;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use PHPUnit\Framework\TestCase;
 
@@ -20,7 +20,7 @@ final class NameTypeTest extends TestCase
         /** @psalm-suppress InternalMethod */
         $type = new NameType();
 
-        $value = $type->convertToPHPValue(null, new PlatformDummy());
+        $value = $type->convertToPHPValue(null, $this->createMock(AbstractPlatform::class));
 
         self::assertNull($value, 'Failed to convert database null value to PHP null value.');
     }
@@ -33,7 +33,7 @@ final class NameTypeTest extends TestCase
         /** @psalm-suppress InternalMethod */
         $type = new NameType();
 
-        $value = $type->convertToPHPValue($name = 'Event name', new PlatformDummy());
+        $value = $type->convertToPHPValue($name = 'Event name', $this->createMock(AbstractPlatform::class));
 
         self::assertNotNull($value);
         self::assertTrue(Name::fromString($name)->equals($value), 'Failed to convert database string to Name object.');
@@ -54,7 +54,7 @@ final class NameTypeTest extends TestCase
             )
         );
 
-        $type->convertToPHPValue($unsupportedDatabaseValue, new PlatformDummy());
+        $type->convertToPHPValue($unsupportedDatabaseValue, $this->createMock(AbstractPlatform::class));
     }
 
     /**
@@ -65,7 +65,7 @@ final class NameTypeTest extends TestCase
         /** @psalm-suppress InternalMethod */
         $type = new NameType();
 
-        $value = $type->convertToDatabaseValue(null, new PlatformDummy());
+        $value = $type->convertToDatabaseValue(null, $this->createMock(AbstractPlatform::class));
 
         self::assertNull($value, 'Failed to convert PHP null value to database null value.');
     }
@@ -78,7 +78,7 @@ final class NameTypeTest extends TestCase
         /** @psalm-suppress InternalMethod */
         $type = new NameType();
 
-        $value = $type->convertToDatabaseValue(Name::fromString($name = 'Event name'), new PlatformDummy());
+        $value = $type->convertToDatabaseValue(Name::fromString($name = 'Event name'), $this->createMock(AbstractPlatform::class));
 
         self::assertSame($name, $value, 'Failed to convert Name object to database string.');
     }
@@ -98,7 +98,7 @@ final class NameTypeTest extends TestCase
             )
         );
 
-        $type->convertToDatabaseValue($unsupportedPHPValue, new PlatformDummy());
+        $type->convertToDatabaseValue($unsupportedPHPValue, $this->createMock(AbstractPlatform::class));
     }
 
     public function testName(): void

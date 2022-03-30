@@ -10,7 +10,7 @@ use RuntimeException;
 
 final class EventIdGenerationFailedTest extends TestCase
 {
-    public function testItCreatesExceptionWithUnexpectedException(): void
+    public function testItCreatesExceptionWithProvidedUnexpectedException(): void
     {
         $exception = EventIdGenerationFailed::unexpectedly(
             $unexpectedException = new RuntimeException('Unexpected error.')
@@ -19,7 +19,7 @@ final class EventIdGenerationFailedTest extends TestCase
         self::assertSame(
             $unexpectedException,
             $exception->getPrevious(),
-            'Exception was not created with unexpected exception.'
+            'Exception was not created with provided unexpected exception.'
         );
     }
 
