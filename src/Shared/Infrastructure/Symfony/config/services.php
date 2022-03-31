@@ -12,6 +12,8 @@ return static function (ContainerConfigurator $container): void {
     $services = $container->services();
     $services->defaults()->autoconfigure()->autowire()->private();
 
+    $services->load('App\Shared\Infrastructure\Symfony\Controller\\', __DIR__ . '/../Controller');
+
     $services->set(MigrationFix::class)
         ->tag('doctrine.event_subscriber');
 
