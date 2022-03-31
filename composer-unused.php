@@ -8,10 +8,13 @@ use Webmozart\Glob\Glob;
 
 return static function (Configuration $config): Configuration {
     return $config
+        ->addNamedFilter(NamedFilter::fromString('babdev/pagerfanta-bundle'))
         ->addNamedFilter(NamedFilter::fromString('doctrine/doctrine-migrations-bundle'))
         ->addNamedFilter(NamedFilter::fromString('ext-iconv'))
-        // TODO: this should not be reported
-        ->addNamedFilter(NamedFilter::fromString('pagerfanta/doctrine-dbal-adapter'))
+        ->addNamedFilter(// TODO: this should not be reported
+            NamedFilter::fromString('pagerfanta/doctrine-dbal-adapter')
+        )
+        ->addNamedFilter(NamedFilter::fromString('pagerfanta/twig'))
         ->addNamedFilter(NamedFilter::fromString('symfony/dotenv'))
         ->addNamedFilter(NamedFilter::fromString('symfony/flex'))
         ->addNamedFilter(NamedFilter::fromString('symfony/monolog-bundle'))

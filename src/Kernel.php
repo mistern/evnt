@@ -23,6 +23,7 @@ class Kernel extends BaseKernel
         $container->import($configDir . '/{packages}/*.{yaml,php}');
         $container->import($configDir . '/{packages}/*.local.{yaml,php}');
         $container->import($configDir . '/services.php');
+        $container->import($configDir . '/services.local.php');
     }
 
     private function configureRoutes(RoutingConfigurator $routes): void

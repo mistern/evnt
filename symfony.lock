@@ -5,6 +5,9 @@
     "amphp/byte-stream": {
         "version": "v1.8.1"
     },
+    "babdev/pagerfanta-bundle": {
+        "version": "v3.6.1"
+    },
     "brick/math": {
         "version": "0.9.3"
     },
@@ -173,6 +176,9 @@
     "pagerfanta/doctrine-dbal-adapter": {
         "version": "v3.6.1"
     },
+    "pagerfanta/twig": {
+        "version": "v3.6.1"
+    },
     "phar-io/manifest": {
         "version": "2.0.3"
     },
@@ -298,6 +304,9 @@
     "seld/jsonlint": {
         "version": "1.8.3"
     },
+    "symfony/browser-kit": {
+        "version": "v6.0.3"
+    },
     "symfony/cache": {
         "version": "v6.0.6"
     },
@@ -319,6 +328,9 @@
             "bin/console"
         ]
     },
+    "symfony/css-selector": {
+        "version": "v6.0.3"
+    },
     "symfony/dependency-injection": {
         "version": "v6.0.6"
     },
@@ -326,6 +338,9 @@
         "version": "v3.0.0"
     },
     "symfony/doctrine-bridge": {
+        "version": "v6.0.6"
+    },
+    "symfony/dom-crawler": {
         "version": "v6.0.6"
     },
     "symfony/dotenv": {
@@ -427,6 +442,12 @@
     },
     "symfony/process": {
         "version": "v6.0.5"
+    },
+    "symfony/property-access": {
+        "version": "v6.0.5"
+    },
+    "symfony/property-info": {
+        "version": "v6.0.3"
     },
     "symfony/proxy-manager-bridge": {
         "version": "v6.0.6"
