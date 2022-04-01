@@ -10,8 +10,9 @@ use App\Event\Domain\Service\EventRepository;
 use App\Tests\Doubles\Event\InMemoryEventRepository;
 use PHPUnit\Framework\TestCase;
 
-use function App\Tests\Fixtures\Domain\Model\aName;
-use function App\Tests\Fixtures\Domain\Model\anEventId;
+use function App\Tests\Fixtures\Event\Domain\Model\aName;
+use function App\Tests\Fixtures\Event\Domain\Model\anEventId;
+use function aSlug;
 
 final class RegisterEventHandlerTest extends TestCase
 {
@@ -36,7 +37,19 @@ final class RegisterEventHandlerTest extends TestCase
         $handler($command);
 
         $event = $repository->getById(anEventId()->withId($command->id)->build());
-        self::assertEquals($name, $event->getName(), 'Event was not registered with provided name.');
+        self::assertEquals($name, $event->getName(), 'Event was not registered with provided Name.');
+    }
+
+    public function testItRegistersEventWithProvidedSlug(): void
+    {
+        $slug = aSlug()->withSlug('provided-slug-1')->build();
+        $command = self::createCommand(slug: $slug->toString());
+        $handler = new RegisterEventHandler($repository = self::createRepository());
+
+        $handler($command);
+
+        $event = $repository->getById(anEventId()->withId($command->id)->build());
+        self::assertEquals($slug, $event->getSlug(), 'Event was not registered with provided Slug.');
     }
 
     private static function createRepository(): EventRepository
@@ -44,8 +57,12 @@ final class RegisterEventHandlerTest extends TestCase
         return new InMemoryEventRepository();
     }
 
-    private static function createCommand(?string $id = null, ?string $name = null): RegisterEvent
+    private static function createCommand(?string $id = null, ?string $name = null, ?string $slug = null): RegisterEvent
     {
-        return new RegisterEvent($id ?? anEventId()->build()->toString(), $name ?? aName()->build()->toString());
+        return new RegisterEvent(
+            $id ?? anEventId()->build()->toString(),
+            $name ?? aName()->build()->toString(),
+            $slug ?? aSlug()->build()->toString(),
+        );
     }
 }

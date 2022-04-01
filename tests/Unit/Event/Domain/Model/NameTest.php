@@ -8,7 +8,7 @@ use App\Event\Domain\Model\Name;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-use function App\Tests\Fixtures\Domain\Model\aName;
+use function App\Tests\Fixtures\Event\Domain\Model\aName;
 use function sprintf;
 use function str_repeat;
 
@@ -31,9 +31,19 @@ final class NameTest extends TestCase
 
     public function testItFailsToCreateIfValueIsTooLong(): void
     {
-        $this->expectExceptionObject(new InvalidArgumentException('Expected a value'));
+        $tooLongLength = Name::MAX_LENGTH + 1;
+        $tooLongValue = str_repeat('a', $tooLongLength);
+        $this->expectExceptionObject(
+            new InvalidArgumentException(
+                sprintf(
+                    'Expected a value to contain at most %s characters; got: "%s".',
+                    Name::MAX_LENGTH,
+                    $tooLongValue
+                )
+            )
+        );
         /** @psalm-suppress UnusedMethodCall */
-        aName()->withName(str_repeat('a', Name::MAX_LENGTH + 1))->build();
+        aName()->withName($tooLongValue)->build();
     }
 
     public function testItEqualsToOtherNameWithSameValue(): void

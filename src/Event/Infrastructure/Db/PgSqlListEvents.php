@@ -13,6 +13,9 @@ use Pagerfanta\Doctrine\DBAL\SingleTableQueryAdapter;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\PagerfantaInterface;
 
+/**
+ * @phpstan-type Row = array{slug: string, name: string}
+ */
 final class PgSqlListEvents implements ListEvents
 {
     public function __construct(private Connection $connection)
@@ -23,9 +26,9 @@ final class PgSqlListEvents implements ListEvents
     {
         $qb = $this->connection
             ->createQueryBuilder()
-            ->select('e.id', 'e.name')
+            ->select('e.slug, e.name')
             ->from('events', 'e');
-        /** @var SingleTableQueryAdapter<array{id: string, name: string}> $queryAdapter */
+        /** @var SingleTableQueryAdapter<Row> $queryAdapter */
         $queryAdapter = new SingleTableQueryAdapter($qb, 'e.id');
         $adapter = new TransformingAdapter($queryAdapter, self::transform(...));
 
@@ -38,10 +41,10 @@ final class PgSqlListEvents implements ListEvents
     }
 
     /**
-     * @param array{id: string, name: string} $row
+     * @param Row $row
      */
     private static function transform(array $row): EventListItem
     {
-        return new EventListItem($row['id'], $row['name']);
+        return new EventListItem($row['slug'], $row['name']);
     }
 }

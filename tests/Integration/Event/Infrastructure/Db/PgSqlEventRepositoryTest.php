@@ -15,8 +15,8 @@ use Ramsey\Uuid\UuidFactoryInterface;
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-use function App\Tests\Fixtures\Domain\Model\anEvent;
-use function App\Tests\Fixtures\Domain\Model\anEventId;
+use function App\Tests\Fixtures\Event\Domain\Model\anEvent;
+use function App\Tests\Fixtures\Event\Domain\Model\anEventId;
 
 final class PgSqlEventRepositoryTest extends KernelTestCase
 {
@@ -32,14 +32,17 @@ final class PgSqlEventRepositoryTest extends KernelTestCase
         $event = anEvent()
             ->withId($id = '123f3091-c3ad-4fb5-bb0d-c08aef9aea4b')
             ->withName($name = 'Event name to be stored')
+            ->withSlug($slug = 'slug-to-be-stored-1')
             ->build();
 
         $repository->store($event);
 
-        $row = $entityManager->getConnection()->fetchAssociative('SELECT id, name FROM events WHERE id = ?', [$id]);
+        $row = $entityManager->getConnection()
+            ->fetchAssociative('SELECT id, name, slug FROM events WHERE id = ?', [$id]);
         self::assertNotFalse($row, 'Row was not stored.');
         self::assertSame($id, $row['id'], 'Event ID was not stored.');
         self::assertSame($name, $row['name'], 'Event Name was not stored.');
+        self::assertSame($slug, $row['slug'], 'Event Slug was not stored.');
     }
 
     /**
@@ -48,16 +51,21 @@ final class PgSqlEventRepositoryTest extends KernelTestCase
     public function testItFindsEventById(): void
     {
         $entityManager = $this->getEntityManager();
-        $entityManager->getConnection()->executeQuery('INSERT INTO events (id, name) VALUES (:id, :name)', [
-            'id' => $id = 'a5dff3c1-fc9a-4d68-921c-a5cd0c91185d',
-            'name' => $name = 'Event name to be loaded',
-        ]);
+        $entityManager->getConnection()->executeQuery(
+            'INSERT INTO events (id, name, slug) VALUES (:id, :name, :slug)',
+            [
+                'id' => $id = 'a5dff3c1-fc9a-4d68-921c-a5cd0c91185d',
+                'name' => $name = 'Event name to be loaded',
+                'slug' => $slug = 'slug-to-be-loaded-1',
+            ]
+        );
         $repository = $this->createRepository(entityManager: $entityManager);
 
         $event = $repository->getById(anEventId()->withId($id)->build());
 
         self::assertSame($id, $event->getId()->toString(), 'Event ID was not loaded.');
         self::assertSame($name, $event->getName()->toString(), 'Event Name was not loaded.');
+        self::assertSame($slug, $event->getSlug()->toString(), 'Event Slug was not loaded.');
     }
 
     public function testItFailsToFindEventByIdIfIdDoesNotExist(): void

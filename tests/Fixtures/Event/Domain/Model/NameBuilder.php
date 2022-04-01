@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Fixtures\Domain\Model;
+namespace App\Tests\Fixtures\Event\Domain\Model;
 
 use App\Event\Domain\Model\Name;
 

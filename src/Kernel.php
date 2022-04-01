@@ -23,7 +23,9 @@ class Kernel extends BaseKernel
         $container->import($configDir . '/{packages}/*.{yaml,php}');
         $container->import($configDir . '/{packages}/*.local.{yaml,php}');
         $container->import($configDir . '/services.php');
-        $container->import($configDir . '/services.local.php');
+        $container->import($configDir . '/services_' . $this->environment . '.php', ignoreErrors: 'not_found');
+        $container->import($configDir . '/services.local.php', ignoreErrors: 'not_found');
+        $container->import($configDir . '/services_' . $this->environment . '.local.php', ignoreErrors: 'not_found');
     }
 
     private function configureRoutes(RoutingConfigurator $routes): void

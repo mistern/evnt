@@ -8,6 +8,7 @@ use App\Event\Domain\Model\Event;
 use App\Event\Domain\Model\EventId;
 use App\Event\Domain\Model\Name;
 use App\Event\Domain\Service\EventRepository;
+use App\Shared\Domain\Model\Slug;
 
 final class RegisterEventHandler
 {
@@ -22,7 +23,8 @@ final class RegisterEventHandler
     {
         $id = EventId::fromString($command->id);
         $name = Name::fromString($command->name);
-        $event = Event::register($id, $name);
+        $slug = Slug::fromString($command->slug);
+        $event = Event::register($id, $name, $slug);
         $this->repository->store($event);
     }
 }

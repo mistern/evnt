@@ -74,7 +74,8 @@
             "App\\Tests\\": "tests/"
         },
         "files": [
-            "tests/Fixtures/Domain/Model/builders.php"
+            "tests/Fixtures/Event/Domain/Model/builders.php",
+            "tests/Fixtures/Shared/Domain/Model/builders.php"
         ]
     },
     "replace": {
@@ -108,7 +109,7 @@
             "@test",
             "@infection"
         ],
-        "analyse": "psalm --no-progress",
+        "analyse": "psalm --no-progress --no-cache",
         "test": "phpunit",
         "check-unused": "composer-unused --no-progress",
         "check-required": "composer-require-checker check --config-file=composer-require-checker.json",

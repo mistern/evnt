@@ -6,9 +6,10 @@ namespace App\Tests\Unit\Event\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
 
-use function App\Tests\Fixtures\Domain\Model\aName;
-use function App\Tests\Fixtures\Domain\Model\anEvent;
-use function App\Tests\Fixtures\Domain\Model\anEventId;
+use function App\Tests\Fixtures\Event\Domain\Model\aName;
+use function App\Tests\Fixtures\Event\Domain\Model\anEvent;
+use function App\Tests\Fixtures\Event\Domain\Model\anEventId;
+use function aSlug;
 
 final class EventTest extends TestCase
 {
@@ -26,5 +27,13 @@ final class EventTest extends TestCase
         $event = anEvent()->withName($name)->build();
 
         self::assertEquals($name, $event->getName(), 'Event was not registered with provided Event Name.');
+    }
+
+    public function testItRegistersWithProvidedSlug(): void
+    {
+        $slug = aSlug()->build();
+        $event = anEvent()->withSlug($slug)->build();
+
+        self::assertEquals($slug, $event->getSlug(), 'Event was not registered with provided Event Slug.');
     }
 }

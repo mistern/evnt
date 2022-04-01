@@ -7,7 +7,7 @@ namespace App\Event\Application\Query;
 final class EventListItem
 {
     public function __construct(
-        public readonly string $id,
+        public readonly string $slug,
         public readonly string $name
     ) {
     }

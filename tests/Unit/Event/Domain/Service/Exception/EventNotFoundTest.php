@@ -7,7 +7,7 @@ namespace App\Tests\Unit\Event\Domain\Service\Exception;
 use App\Event\Domain\Service\Exception\EventNotFound;
 use PHPUnit\Framework\TestCase;
 
-use function App\Tests\Fixtures\Domain\Model\anEventId;
+use function App\Tests\Fixtures\Event\Domain\Model\anEventId;
 use function sprintf;
 
 final class EventNotFoundTest extends TestCase

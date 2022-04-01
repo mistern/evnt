@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
+use function App\Tests\Fixtures\Event\Domain\Model\anEvent;
 use function sprintf;
 
 final class EventTest extends WebTestCase
 {
-    private ?Connection $connection = null;
+    use EventHelper;
 
-    public function testItRespondsWithSuccessfulResponse(): void
+    public function testListingPageRespondsWithSuccessfulResponse(): void
     {
         $client = self::createClient();
 
@@ -31,21 +31,33 @@ final class EventTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testItShowsEventListingWithPagination(): void
+    public function testListingPageShowsEventListingWithPagination(): void
     {
         $client = self::createClient();
-        $this->createRows([
-            ['id' => 'a5dff3c1-fc9a-4d68-921c-a5cd0c91185d', 'name' => $name1 = 'Event 1'],
-            ['id' => '98b3c0a7-dc96-4ea8-b131-2f443b1972e4', 'name' => 'Event 2'],
-            ['id' => 'b02da66b-366a-4aca-926e-37fc72d3cf00', 'name' => $name3 = 'Event 3'],
-        ]);
+        $this->storeEvents(
+            anEvent()
+                ->withId('5a33ad51-dd31-462a-9fc3-0c5f6e8b4bd7')
+                ->withSlug($slug1 = 'event-1')
+                ->withName($name1 = 'Event 1'),
+            anEvent()
+                ->withId('00bb049e-2818-4862-b9e5-f8f05aa878a7')
+                ->withSlug('event-2'),
+            anEvent()
+                ->withId('48be1420-ddc1-4b23-b1ea-497983a840a8')
+                ->withSlug('event-3')
+                ->withName($name3 = 'Event 3'),
+        );
 
         $crawler = $client->request('GET', '/events/');
 
+        self::assertSelectorExists(
+            '.events .event a[href="/events/' . $slug1 . '/"]',
+            'List should contain Event item with link to details page.'
+        );
         self::assertSelectorTextContains(
             '.events',
             $name1,
-            sprintf('List should contain Event Name item with name "%s".', $name1)
+            sprintf('List should contain Event item with Name "%s".', $name1)
         );
         self::assertSelectorExists('.events-pagination', 'List should contain pagination.');
 
@@ -60,7 +72,7 @@ final class EventTest extends WebTestCase
         );
     }
 
-    public function testItShowsEmptyListingWithoutPagination(): void
+    public function testListingPageShowsEmptyListingWithoutPagination(): void
     {
         $client = self::createClient();
 
@@ -74,27 +86,18 @@ final class EventTest extends WebTestCase
         self::assertSelectorNotExists('.events-pagination', 'List should not contain pagination.');
     }
 
-    /**
-     * @param array<array{id: string, name: string}> $rows
-     * @throws Exception
-     */
-    private function createRows(array $rows): void
+    public function testEventDetailsPageRespondsWithSuccessfulResponse(): void
     {
-        $connection = $this->getConnection();
-        foreach ($rows as $row) {
-            $connection->executeQuery(
-                'INSERT INTO events (id, name) VALUES (:id, :name)',
-                ['id' => $row['id'], 'name' => $row['name']]
-            );
-        }
-    }
+        $client = self::createClient();
+        $this->storeEvents(anEvent()->withName($name = 'Event details 1')->withSlug($slug = 'event-details-1'));
 
-    private function getConnection(): Connection
-    {
-        if (null === $this->connection) {
-            $this->connection = self::bootKernel()->getContainer()->get('doctrine.dbal.default_connection');
-        }
+        $client->request('GET', '/events/' . $slug . '/');
 
-        return $this->connection;
+        self::assertSame(
+            Response::HTTP_OK,
+            $client->getResponse()->getStatusCode(),
+            'Event details page did not respond with HTTP OK.'
+        );
+        self::assertSelectorTextContains('h2', $name, 'Event details page should contain header with Event Name.');
     }
 }
