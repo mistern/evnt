@@ -6,12 +6,14 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use App\Event\Infrastructure\Doctrine\DBAL\Types\EventIdType;
 use App\Event\Infrastructure\Doctrine\DBAL\Types\NameType;
+use App\Event\Infrastructure\Doctrine\DBAL\Types\ShortIntroType;
 use Symfony\Config\DoctrineConfig;
 
 return static function (DoctrineConfig $doctrine): void {
     $dbal = $doctrine->dbal();
     $dbal->type(EventIdType::NAME)->class(EventIdType::class);
     $dbal->type(NameType::NAME)->class(NameType::class);
+    $dbal->type(ShortIntroType::NAME)->class(ShortIntroType::class);
 
     $doctrine->orm()->entityManager('default')->mapping('Event')
         ->isBundle(false)

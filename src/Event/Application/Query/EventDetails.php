@@ -6,7 +6,7 @@ namespace App\Event\Application\Query;
 
 final class EventDetails
 {
-    public function __construct(public readonly string $name)
+    public function __construct(public readonly string $name, public readonly string $shortIntro)
     {
     }
 }

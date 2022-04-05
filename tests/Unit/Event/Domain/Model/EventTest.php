@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use function App\Tests\Fixtures\Event\Domain\Model\aName;
 use function App\Tests\Fixtures\Event\Domain\Model\anEvent;
 use function App\Tests\Fixtures\Event\Domain\Model\anEventId;
+use function App\Tests\Fixtures\Event\Domain\Model\aShortIntro;
 use function aSlug;
 
 final class EventTest extends TestCase
@@ -21,6 +22,14 @@ final class EventTest extends TestCase
         self::assertEquals($id, $event->getId(), 'Event was not registered with provided ID.');
     }
 
+    public function testItRegistersWithProvidedSlug(): void
+    {
+        $slug = aSlug()->build();
+        $event = anEvent()->withSlug($slug)->build();
+
+        self::assertEquals($slug, $event->getSlug(), 'Event was not registered with provided Event Slug.');
+    }
+
     public function testItRegistersWithProvidedName(): void
     {
         $name = aName()->build();
@@ -29,11 +38,15 @@ final class EventTest extends TestCase
         self::assertEquals($name, $event->getName(), 'Event was not registered with provided Event Name.');
     }
 
-    public function testItRegistersWithProvidedSlug(): void
+    public function testItRegistersWithProvidedShortIntro(): void
     {
-        $slug = aSlug()->build();
-        $event = anEvent()->withSlug($slug)->build();
+        $shortIntro = aShortIntro()->build();
+        $event = anEvent()->withShortIntro($shortIntro)->build();
 
-        self::assertEquals($slug, $event->getSlug(), 'Event was not registered with provided Event Slug.');
+        self::assertEquals(
+            $shortIntro,
+            $event->getShortIntro(),
+            'Event was not registered with providedd Event Short Intro.'
+        );
     }
 }

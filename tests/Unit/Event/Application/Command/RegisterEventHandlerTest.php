@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 use function App\Tests\Fixtures\Event\Domain\Model\aName;
 use function App\Tests\Fixtures\Event\Domain\Model\anEventId;
+use function App\Tests\Fixtures\Event\Domain\Model\aShortIntro;
 use function aSlug;
 
 final class RegisterEventHandlerTest extends TestCase
@@ -52,17 +53,34 @@ final class RegisterEventHandlerTest extends TestCase
         self::assertEquals($slug, $event->getSlug(), 'Event was not registered with provided Slug.');
     }
 
+    public function testItRegistersEventWithProvidedShortIntro(): void
+    {
+        $shortIntro = aShortIntro()->withShortIntro('Provided short introduction.')->build();
+        $command = self::createCommand(shortIntro: $shortIntro->toString());
+        $handler = new RegisterEventHandler($repository = self::createRepository());
+
+        $handler($command);
+
+        $event = $repository->getById(anEventId()->withId($command->id)->build());
+        self::assertEquals($shortIntro, $event->getShortIntro(), 'Event was not registered with provided Short Intro.');
+    }
+
     private static function createRepository(): EventRepository
     {
         return new InMemoryEventRepository();
     }
 
-    private static function createCommand(?string $id = null, ?string $name = null, ?string $slug = null): RegisterEvent
-    {
+    private static function createCommand(
+        ?string $id = null,
+        ?string $slug = null,
+        ?string $name = null,
+        ?string $shortIntro = null
+    ): RegisterEvent {
         return new RegisterEvent(
             $id ?? anEventId()->build()->toString(),
-            $name ?? aName()->build()->toString(),
             $slug ?? aSlug()->build()->toString(),
+            $name ?? aName()->build()->toString(),
+            $shortIntro ?? aShortIntro()->build()->toString(),
         );
     }
 }

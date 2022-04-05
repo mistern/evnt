@@ -34,7 +34,8 @@ final class PgSqlListEventsTest extends KernelTestCase
             anEvent()
                 ->withId('a5dff3c1-fc9a-4d68-921c-a5cd0c91185d')
                 ->withSlug($slug = 'event-1')
-                ->withName($name = 'Event 1'),
+                ->withName($name = 'Event 1')
+                ->withShortIntro($shortIntro = 'Short introduction 1.'),
             anEvent()
                 ->withId('98b3c0a7-dc96-4ea8-b131-2f443b1972e4')
                 ->withSlug('event-2'),
@@ -52,6 +53,7 @@ final class PgSqlListEventsTest extends KernelTestCase
         $firstItem = $items[0];
         self::assertSame($slug, $firstItem->slug, 'Event Slug was not loaded.');
         self::assertSame($name, $firstItem->name, 'Event Name was not loaded.');
+        self::assertSame($shortIntro, $firstItem->shortIntro, 'Event Short Intro was not loaded.');
     }
 
     public function testItPaginatesSecondPage(): void
@@ -65,8 +67,7 @@ final class PgSqlListEventsTest extends KernelTestCase
                 ->withSlug('event-2'),
             anEvent()
                 ->withId('b02da66b-366a-4aca-926e-37fc72d3cf00')
-                ->withSlug($slug = 'event-3')
-                ->withName($name = 'Event 3'),
+                ->withSlug($slug = 'event-3'),
         );
         $query = new PgSqlListEvents($this->getConnection());
 
@@ -77,7 +78,6 @@ final class PgSqlListEventsTest extends KernelTestCase
         self::assertCount(1, $items, 'Event listing did not provide only 1 list item.');
         $firstItem = $items[0];
         self::assertSame($slug, $firstItem->slug, 'Event Slug was not loaded.');
-        self::assertSame($name, $firstItem->name, 'Event Name was not loaded.');
     }
 
     protected function tearDown(): void

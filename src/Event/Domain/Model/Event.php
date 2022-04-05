@@ -11,16 +11,20 @@ class Event
     /**
      * @psalm-pure
      */
-    private function __construct(private EventId $id, private Name $name, private Slug $slug)
-    {
+    private function __construct(
+        private EventId $id,
+        private Slug $slug,
+        private Name $name,
+        private ShortIntro $shortIntro
+    ) {
     }
 
     /**
      * @psalm-pure
      */
-    public static function register(EventId $id, Name $name, Slug $slug): self
+    public static function register(EventId $id, Slug $slug, Name $name, ShortIntro $shortIntro): self
     {
-        return new self($id, $name, $slug);
+        return new self($id, $slug, $name, $shortIntro);
     }
 
     public function getId(): EventId
@@ -28,13 +32,18 @@ class Event
         return $this->id;
     }
 
+    public function getSlug(): Slug
+    {
+        return $this->slug;
+    }
+
     public function getName(): Name
     {
         return $this->name;
     }
 
-    public function getSlug(): Slug
+    public function getShortIntro(): ShortIntro
     {
-        return $this->slug;
+        return $this->shortIntro;
     }
 }

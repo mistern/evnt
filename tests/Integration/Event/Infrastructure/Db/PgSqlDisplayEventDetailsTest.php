@@ -25,13 +25,17 @@ final class PgSqlDisplayEventDetailsTest extends KernelTestCase
     public function testItProvidesEventDetails(): void
     {
         $this->storeEvents(
-            anEvent()->withSlug($slug = 'event-details-1')->withName($name = 'Event details 1'),
+            anEvent()
+                ->withSlug($slug = 'event-details-1')
+                ->withName($name = 'Event details 1')
+                ->withShortIntro($shortIntro = 'Short introduction 1.'),
         );
         $query = new PgSqlDisplayEventDetails($this->getConnection());
 
         $eventDetails = $query->display($slug);
 
         self::assertSame($name, $eventDetails->name, 'Event Name was not loaded.');
+        self::assertSame($shortIntro, $eventDetails->shortIntro, 'Event Short Intro was not loaded');
     }
 
     /**

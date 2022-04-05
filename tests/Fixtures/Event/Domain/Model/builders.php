@@ -23,6 +23,14 @@ function aName(): NameBuilder
 /**
  * @psalm-pure
  */
+function aShortIntro(): ShortIntroBuilder
+{
+    return new ShortIntroBuilder();
+}
+
+/**
+ * @psalm-pure
+ */
 function anEvent(): EventBuilder
 {
     return new EventBuilder();

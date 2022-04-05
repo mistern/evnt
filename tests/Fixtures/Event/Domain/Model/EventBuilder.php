@@ -7,6 +7,7 @@ namespace App\Tests\Fixtures\Event\Domain\Model;
 use App\Event\Domain\Model\Event;
 use App\Event\Domain\Model\EventId;
 use App\Event\Domain\Model\Name;
+use App\Event\Domain\Model\ShortIntro;
 use App\Shared\Domain\Model\Slug;
 use App\Tests\Fixtures\Shared\Domain\Model\SlugBuilder;
 
@@ -19,14 +20,16 @@ use function is_string;
 final class EventBuilder
 {
     private EventId $id;
-    private Name $name;
     private Slug $slug;
+    private Name $name;
+    private ShortIntro $shortIntro;
 
     public function __construct()
     {
         $this->id = anEventId()->build();
-        $this->name = aName()->build();
         $this->slug = aSlug()->build();
+        $this->name = aName()->build();
+        $this->shortIntro = aShortIntro()->build();
     }
 
     public function withId(string|EventIdBuilder|EventId $id): self
@@ -36,18 +39,6 @@ final class EventBuilder
             is_string($id) => EventId::fromString($id),
             $id instanceof EventIdBuilder => $id->build(),
             default => $id,
-        };
-
-        return $new;
-    }
-
-    public function withName(string|NameBuilder|Name $name): self
-    {
-        $new = clone $this;
-        $new->name = match (true) {
-            is_string($name) => Name::fromString($name),
-            $name instanceof NameBuilder => $name->build(),
-            default => $name,
         };
 
         return $new;
@@ -65,8 +56,33 @@ final class EventBuilder
         return $new;
     }
 
+    public function withName(string|NameBuilder|Name $name): self
+    {
+        $new = clone $this;
+        $new->name = match (true) {
+            is_string($name) => Name::fromString($name),
+            $name instanceof NameBuilder => $name->build(),
+            default => $name,
+        };
+
+        return $new;
+    }
+
+    public function withShortIntro(string|ShortIntroBuilder|ShortIntro $shortIntro): self
+    {
+        $new = clone $this;
+        $new->shortIntro = match (true) {
+            is_string($shortIntro) => ShortIntro::fromString($shortIntro),
+            $shortIntro instanceof ShortIntroBuilder => $shortIntro->build(),
+            default => $shortIntro,
+        };
+
+        return $new;
+    }
+
+
     public function build(): Event
     {
-        return Event::register($this->id, $this->name, $this->slug);
+        return Event::register($this->id, $this->slug, $this->name, $this->shortIntro);
     }
 }

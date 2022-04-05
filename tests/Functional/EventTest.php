@@ -38,7 +38,8 @@ final class EventTest extends WebTestCase
             anEvent()
                 ->withId('5a33ad51-dd31-462a-9fc3-0c5f6e8b4bd7')
                 ->withSlug($slug1 = 'event-1')
-                ->withName($name1 = 'Event 1'),
+                ->withName($name1 = 'Event 1')
+                ->withShortIntro($shortIntro1 = 'Short introduction 1.'),
             anEvent()
                 ->withId('00bb049e-2818-4862-b9e5-f8f05aa878a7')
                 ->withSlug('event-2'),
@@ -58,6 +59,11 @@ final class EventTest extends WebTestCase
             '.events',
             $name1,
             sprintf('List should contain Event item with Name "%s".', $name1)
+        );
+        self::assertSelectorTextContains(
+            '.events p',
+            $shortIntro1,
+            sprintf('List should contain Event Short Intro item for Name "%s".', $name1)
         );
         self::assertSelectorExists('.events-pagination', 'List should contain pagination.');
 
@@ -89,7 +95,12 @@ final class EventTest extends WebTestCase
     public function testEventDetailsPageRespondsWithSuccessfulResponse(): void
     {
         $client = self::createClient();
-        $this->storeEvents(anEvent()->withName($name = 'Event details 1')->withSlug($slug = 'event-details-1'));
+        $this->storeEvents(
+            anEvent()
+                ->withName($name = 'Event details 1')
+                ->withSlug($slug = 'event-details-1')
+                ->withShortIntro($shortIntro = 'Short introduction 1.')
+        );
 
         $client->request('GET', '/events/' . $slug . '/');
 
@@ -99,5 +110,10 @@ final class EventTest extends WebTestCase
             'Event details page did not respond with HTTP OK.'
         );
         self::assertSelectorTextContains('h2', $name, 'Event details page should contain header with Event Name.');
+        self::assertSelectorTextContains(
+            'p',
+            $shortIntro,
+            'Event details page should contain paragraph with Event Short Intro.'
+        );
     }
 }

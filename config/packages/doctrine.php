@@ -15,7 +15,9 @@ return static function (ContainerConfigurator $container, FrameworkConfig $frame
     $orm = $doctrine->orm();
     $orm->autoGenerateProxyClasses(true);
 
-    $em = $orm->entityManager('default');
+    $em = $orm->entityManager('default')
+        ->namingStrategy('doctrine.orm.naming_strategy.underscore_number_aware')
+        ->autoMapping(true);
 
     if (Env::TEST === $container->env()) {
         // "TEST_TOKEN" is typically set by ParaTest

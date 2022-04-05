@@ -14,7 +14,7 @@ use Pagerfanta\Pagerfanta;
 use Pagerfanta\PagerfantaInterface;
 
 /**
- * @phpstan-type Row = array{slug: string, name: string}
+ * @phpstan-type Row = array{slug: string, name: string, short_intro: string}
  */
 final class PgSqlListEvents implements ListEvents
 {
@@ -26,7 +26,7 @@ final class PgSqlListEvents implements ListEvents
     {
         $qb = $this->connection
             ->createQueryBuilder()
-            ->select('e.slug, e.name')
+            ->select('e.slug', 'e.name', 'e.short_intro')
             ->from('events', 'e');
         /** @var SingleTableQueryAdapter<Row> $queryAdapter */
         $queryAdapter = new SingleTableQueryAdapter($qb, 'e.id');
@@ -45,6 +45,6 @@ final class PgSqlListEvents implements ListEvents
      */
     private static function transform(array $row): EventListItem
     {
-        return new EventListItem($row['slug'], $row['name']);
+        return new EventListItem($row['slug'], $row['name'], $row['short_intro']);
     }
 }

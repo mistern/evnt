@@ -1,3 +1,11 @@
+ENV=dev
+
+.PHONY: migrations
+migrations:
+	bin/console -e $(ENV) doctrine:database:drop --if-exists --force
+	bin/console -e $(ENV) doctrine:database:create --if-not-exists
+	bin/console -e $(ENV) doctrine:migrations:migrate --no-interaction
+
 .PHONY: it
 it: qa unused-checks required-checks
 

@@ -21,9 +21,9 @@ final class PgSqlDisplayEventDetails implements DisplayEventDetails
      */
     public function display(string $slug): EventDetails
     {
-        /** @var array{name: string}|false $row */
+        /** @var array{name: string, short_intro: string}|false $row */
         $row = $this->connection->createQueryBuilder()
-            ->select('e.name')
+            ->select('e.name', 'e.short_intro')
             ->from('events', 'e')
             ->where('e.slug = :slug')
             ->setParameter('slug', $slug)
@@ -33,6 +33,6 @@ final class PgSqlDisplayEventDetails implements DisplayEventDetails
             throw EventDetailsNotFound::bySlug($slug);
         }
 
-        return new EventDetails($row['name']);
+        return new EventDetails($row['name'], $row['short_intro']);
     }
 }

@@ -8,7 +8,8 @@ final class EventListItem
 {
     public function __construct(
         public readonly string $slug,
-        public readonly string $name
+        public readonly string $name,
+        public readonly string $shortIntro,
     ) {
     }
 }

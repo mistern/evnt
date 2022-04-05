@@ -7,6 +7,7 @@ namespace App\Event\Application\Command;
 use App\Event\Domain\Model\Event;
 use App\Event\Domain\Model\EventId;
 use App\Event\Domain\Model\Name;
+use App\Event\Domain\Model\ShortIntro;
 use App\Event\Domain\Service\EventRepository;
 use App\Shared\Domain\Model\Slug;
 
@@ -24,7 +25,8 @@ final class RegisterEventHandler
         $id = EventId::fromString($command->id);
         $name = Name::fromString($command->name);
         $slug = Slug::fromString($command->slug);
-        $event = Event::register($id, $name, $slug);
+        $shortIntro = ShortIntro::fromString($command->shortIntro);
+        $event = Event::register($id, $slug, $name, $shortIntro);
         $this->repository->store($event);
     }
 }
