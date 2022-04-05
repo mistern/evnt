@@ -2,6 +2,7 @@
     "name": "mistern/evnt",
     "type": "project",
     "license": "proprietary",
+    "description": "evnt application.",
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
@@ -96,24 +97,7 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ],
-        "qa": [
-            "@analyse",
-            "@test",
-            "@infection"
-        ],
-        "check": [
-            "@analyse",
-            "@check-unused",
-            "@check-required",
-            "@test",
-            "@infection"
-        ],
-        "analyse": "psalm --no-progress --no-cache",
-        "test": "phpunit",
-        "check-unused": "composer-unused --no-progress",
-        "check-required": "composer-require-checker check --config-file=composer-require-checker.json",
-        "infection": "infection run --no-progress -c infection.json"
+        ]
     },
     "conflict": {
         "symfony/symfony": "*"

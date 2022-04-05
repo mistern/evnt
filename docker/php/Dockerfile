@@ -4,6 +4,7 @@ RUN apk add --no-cache \
         gettext \
         git \
         gnu-libiconv \
+        make \
         tzdata \
     ;
 
