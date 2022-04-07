@@ -35,3 +35,11 @@ function anEvent(): EventBuilder
 {
     return new EventBuilder();
 }
+
+/**
+ * @psalm-pure
+ */
+function anEventListOf(int $noItems): EventListBuilder
+{
+    return new EventListBuilder($noItems);
+}

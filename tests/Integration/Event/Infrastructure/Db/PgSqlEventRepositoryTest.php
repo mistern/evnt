@@ -53,16 +53,16 @@ final class PgSqlEventRepositoryTest extends KernelTestCase
     public function testItFindsEventById(): void
     {
         $entityManager = $this->getEntityManager();
-        $entityManager->getConnection()->executeQuery(
-            'INSERT INTO events (id, name, slug, short_intro) VALUES (:id, :name, :slug, :shortIntro)',
-            [
-                'id' => $id = 'a5dff3c1-fc9a-4d68-921c-a5cd0c91185d',
-                'slug' => $slug = 'slug-to-be-loaded-1',
-                'name' => $name = 'Event name to be loaded',
-                'shortIntro' => $shortIntro = 'Short introduction to be loaded.',
-            ]
-        );
         $repository = $this->createRepository(entityManager: $entityManager);
+        $repository->store(
+            anEvent()
+                ->withId($id = 'a5dff3c1-fc9a-4d68-921c-a5cd0c91185d')
+                ->withSlug($slug = 'slug-to-be-loaded-1')
+                ->withName($name = 'Event name to be loaded')
+                ->withShortIntro($shortIntro = 'Short introduction to be loaded.')
+                ->build()
+        );
+        $entityManager->clear();
 
         $event = $repository->getById(anEventId()->withId($id)->build());
 

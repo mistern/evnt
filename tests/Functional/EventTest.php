@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
+use App\Tests\Fixtures\Event\Domain\Model\EventBuilder;
 use Doctrine\DBAL\Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 use function App\Tests\Fixtures\Event\Domain\Model\anEvent;
+use function App\Tests\Fixtures\Event\Domain\Model\anEventListOf;
 use function sprintf;
 
 final class EventTest extends WebTestCase
@@ -34,20 +36,20 @@ final class EventTest extends WebTestCase
     public function testListingPageShowsEventListingWithPagination(): void
     {
         $client = self::createClient();
-        $this->storeEvents(
-            anEvent()
-                ->withId('5a33ad51-dd31-462a-9fc3-0c5f6e8b4bd7')
-                ->withSlug($slug1 = 'event-1')
-                ->withName($name1 = 'Event 1')
-                ->withShortIntro($shortIntro1 = 'Short introduction 1.'),
-            anEvent()
-                ->withId('00bb049e-2818-4862-b9e5-f8f05aa878a7')
-                ->withSlug('event-2'),
-            anEvent()
-                ->withId('48be1420-ddc1-4b23-b1ea-497983a840a8')
-                ->withSlug('event-3')
-                ->withName($name3 = 'Event 3'),
-        );
+        $slug1 = 'event-1';
+        $name1 = 'Event 1';
+        $shortIntro1 = 'Short introduction 1.';
+        $event1 = static fn(EventBuilder $event): EventBuilder => $event
+            ->withSlug($slug1)
+            ->withName($name1)
+            ->withShortIntro($shortIntro1);
+
+        $name3 = 'Event 3';
+        $event3 = static fn(EventBuilder $event): EventBuilder => $event->withName($name3);
+        $events = anEventListOf(3)
+            ->withNthItem(1, $event1)
+            ->withNthItem(3, $event3);
+        $this->storeEvents(...$events->build());
 
         $crawler = $client->request('GET', '/events/');
 

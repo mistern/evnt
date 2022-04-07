@@ -7,11 +7,12 @@ namespace App\Tests\Integration\Event\Infrastructure\Db;
 use App\Event\Application\Query\EventListItem;
 use App\Event\Infrastructure\Db\PgSqlListEvents;
 use App\Shared\Application\Query\Pagination;
+use App\Tests\Fixtures\Event\Domain\Model\EventBuilder;
 use App\Tests\Functional\EventHelper;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-use function App\Tests\Fixtures\Event\Domain\Model\anEvent;
+use function App\Tests\Fixtures\Event\Domain\Model\anEventListOf;
 
 final class PgSqlListEventsTest extends KernelTestCase
 {
@@ -30,19 +31,17 @@ final class PgSqlListEventsTest extends KernelTestCase
 
     public function testItPaginatesFirstPage(): void
     {
-        $this->storeEvents(
-            anEvent()
-                ->withId('a5dff3c1-fc9a-4d68-921c-a5cd0c91185d')
-                ->withSlug($slug = 'event-1')
-                ->withName($name = 'Event 1')
-                ->withShortIntro($shortIntro = 'Short introduction 1.'),
-            anEvent()
-                ->withId('98b3c0a7-dc96-4ea8-b131-2f443b1972e4')
-                ->withSlug('event-2'),
-            anEvent()
-                ->withId('b02da66b-366a-4aca-926e-37fc72d3cf00')
-                ->withSlug('event-3'),
-        );
+        $slug = 'event-1';
+        $name = 'Event 1';
+        $shortIntro = 'Short introduction 1.';
+        $event = static fn(EventBuilder $event): EventBuilder => $event
+            ->withSlug($slug)
+            ->withName($name)
+            ->withShortIntro($shortIntro);
+        $events = anEventListOf(3)
+            ->withNthItem(1, $event);
+
+        $this->storeEvents(...$events->build());
         $query = new PgSqlListEvents($this->getConnection());
 
         $pagination = $query->list(new Pagination(1, 2));
@@ -58,17 +57,11 @@ final class PgSqlListEventsTest extends KernelTestCase
 
     public function testItPaginatesSecondPage(): void
     {
-        $this->storeEvents(
-            anEvent()
-                ->withId('a5dff3c1-fc9a-4d68-921c-a5cd0c91185d')
-                ->withSlug('event-1'),
-            anEvent()
-                ->withId('98b3c0a7-dc96-4ea8-b131-2f443b1972e4')
-                ->withSlug('event-2'),
-            anEvent()
-                ->withId('b02da66b-366a-4aca-926e-37fc72d3cf00')
-                ->withSlug($slug = 'event-3'),
-        );
+        $slug = 'event-3';
+        $events = anEventListOf(3)
+            ->withNthItem(3, static fn(EventBuilder $event): EventBuilder => $event->withSlug($slug));
+
+        $this->storeEvents(...$events->build());
         $query = new PgSqlListEvents($this->getConnection());
 
         $pagination = $query->list(new Pagination(2, 2));

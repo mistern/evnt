@@ -47,5 +47,3 @@ RUN set -eux; \
 
 ENV COMPOSER_HOME /.composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-COPY --from=marcel0000/phive /usr/local/bin/phive /usr/local/bin/phive
